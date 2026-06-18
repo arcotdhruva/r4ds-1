@@ -1,29 +1,29 @@
----
-title: "Analyzing Music Data"
-author: "Dhruva Arcot"
-format: html
-execute:
-  echo: false
----
-
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| message: false
 library(tidyverse)
-```
-
-```{r}
+#
+#
+#
 billboard %>%
   select(artist, track, date.entered, matches("^wk[1-4]$")) %>%
   print(n = 20)
-```
-
-```{r}
+#
+#
+#
 # Summary of date.entered to show time period covered
 summary(as.Date(billboard$date.entered))
-```
-
-```{r}
+#
+#
+#
 # Histogram of wk1 with sample size in title
 wk1_n <- sum(!is.na(billboard$wk1))
 ggplot(billboard, aes(x = wk1)) +
@@ -34,9 +34,9 @@ ggplot(billboard, aes(x = wk1)) +
     y = "count"
   ) +
   theme_minimal()
-```
-
-  ```{r}
+#
+#
+#
   # Histogram of wk6 with sample size in title
   wk6_n <- sum(!is.na(billboard$wk6))
   ggplot(billboard, aes(x = wk6)) +
@@ -47,9 +47,9 @@ ggplot(billboard, aes(x = wk1)) +
       y = "count"
     ) +
     theme_minimal()
-  ```
-
-  ```{r}
+#
+#
+#
   # Table of missing and present counts for selected wk columns
   wk_cols <- c("wk1","wk4","wk10","wk20","wk40","wk76")
   counts <- tibble(column = wk_cols) %>%
@@ -59,9 +59,9 @@ ggplot(billboard, aes(x = wk1)) +
       total = nrow(billboard)
     )
   counts %>% print()
-  ```
-
-```{r}
+#
+#
+#
 # Detect songs that leave the chart and re-enter
 billboard <- billboard %>%
   mutate(
@@ -92,9 +92,9 @@ billboard %>%
     `Did not re-enter` = sum(!re_entered)
   ) %>%
   print()
-```
-
-```{r}
+#
+#
+#
 # Compare wk1 and wk6 ranks
 comparison <- billboard %>%
   mutate(
@@ -121,9 +121,9 @@ comparison %>%
   filter(!is.na(rank_change)) %>%
   summarize(median_change = median(rank_change)) %>%
   print()
-```
-
-```{r}
+#
+#
+#
 # Reshape billboard data to long format: week and rank columns
 billboard_long <- billboard %>%
   select(artist, track, starts_with("wk")) %>%
@@ -147,93 +147,7 @@ ggplot(billboard_long, aes(x = week, y = rank, group = interaction(artist, track
   ) +
   theme_minimal() +
   theme(legend.position = "none")
-```
-
-```{r}
-# Create song-level summary
-song_summary <- billboard_long %>%
-  group_by(artist, track) %>%
-  summarize(
-    first_rank = first(rank),
-    best_rank = min(rank),
-    week_at_best = first(week[rank == min(rank)]),
-    total_weeks = n(),
-    .groups = "drop"
-  )
-
-song_summary %>% print(n = 20)
-
-# Identify three notable songs
-cat("\n=== NOTABLE SONGS ===\n")
-
-# 1. Fastest to reach #1 (minimum week number for songs that hit rank 1)
-fastest_to_one <- song_summary %>%
-  filter(best_rank == 1) %>%
-  arrange(week_at_best) %>%
-  slice(1)
-cat("\nFastest to reach #1:\n")
-print(fastest_to_one)
-
-# 2. Slowest to reach #1 (maximum week number for songs that hit rank 1)
-slowest_to_one <- song_summary %>%
-  filter(best_rank == 1) %>%
-  arrange(desc(week_at_best)) %>%
-  slice(1)
-cat("\nSlowest to reach #1:\n")
-print(slowest_to_one)
-
-# 3. Top-10 song with longest chart run
-longest_top10 <- song_summary %>%
-  filter(best_rank <= 10) %>%
-  arrange(desc(total_weeks)) %>%
-  slice(1)
-cat("\nTop-10 song with longest chart run:\n")
-print(longest_top10)
-```
-
-```{r}
-#| cache: true
-# Plot top-10 songs with three notable songs highlighted
-# Get the three notable songs
-fastest_song <- fastest_to_one %>% select(artist, track)
-slowest_song <- slowest_to_one %>% select(artist, track)
-longest_song <- longest_top10 %>% select(artist, track)
-
-# Filter to top-10 songs and mark the notable ones
-top10_long <- billboard_long %>%
-  inner_join(
-    song_summary %>% filter(best_rank <= 10) %>% select(artist, track),
-    by = c("artist", "track")
-  ) %>%
-  mutate(
-    song_type = case_when(
-      artist == fastest_to_one$artist & track == fastest_to_one$track ~ "Fastest to #1",
-      artist == slowest_to_one$artist & track == slowest_to_one$track ~ "Slowest to #1",
-      artist == longest_top10$artist & track == longest_top10$track ~ "Longest top-10 run",
-      TRUE ~ "Other top-10"
-    )
-  )
-
-# Create plot with conditional coloring
-ggplot(top10_long, aes(x = week, y = rank, group = interaction(artist, track), color = song_type)) +
-  geom_line(
-    data = filter(top10_long, song_type == "Other top-10"),
-    aes(color = NULL),
-    color = "gray80",
-    size = 0.5,
-    alpha = 0.6
-  ) +
-  geom_line(
-    data = filter(top10_long, song_type != "Other top-10"),
-    size = 1
-  ) +
-  scale_y_reverse() +
-  labs(
-    title = "Top-10 Songs with Notable Performers Highlighted",
-    x = "Week",
-    y = "Rank (lower is better)",
-    color = "Song Type"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "right")
-```
+#
+#
+#
+#

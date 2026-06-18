@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Dhruva Arcot">
 
 <title>Analyzing Music Data</title>
 <style>
@@ -56,6 +57,12 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dhruva Arcot </p>
+          </div>
+  </div>
     
   
     
@@ -66,7 +73,174 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 317 × 7
+   artist              track                date.entered   wk1   wk2   wk3   wk4
+   &lt;chr&gt;               &lt;chr&gt;                &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 2 Pac               Baby Don't Cry (Kee… 2000-02-26      87    82    72    77
+ 2 2Ge+her             The Hardest Part Of… 2000-09-02      91    87    92    NA
+ 3 3 Doors Down        Kryptonite           2000-04-08      81    70    68    67
+ 4 3 Doors Down        Loser                2000-10-21      76    76    72    69
+ 5 504 Boyz            Wobble Wobble        2000-04-15      57    34    25    17
+ 6 98^0                Give Me Just One Ni… 2000-08-19      51    39    34    26
+ 7 A*Teens             Dancing Queen        2000-07-08      97    97    96    95
+ 8 Aaliyah             I Don't Wanna        2000-01-29      84    62    51    41
+ 9 Aaliyah             Try Again            2000-03-18      59    53    38    28
+10 Adams, Yolanda      Open My Heart        2000-08-26      76    76    74    69
+11 Adkins, Trace       More                 2000-04-29      84    84    75    73
+12 Aguilera, Christina Come On Over Baby (… 2000-08-05      57    47    45    29
+13 Aguilera, Christina I Turn To You        2000-04-15      50    39    30    28
+14 Aguilera, Christina What A Girl Wants    1999-11-27      71    51    28    18
+15 Alice Deejay        Better Off Alone     2000-04-08      79    65    53    48
+16 Allan, Gary         Smoke Rings In The … 2000-01-22      80    78    76    77
+17 Amber               Sexual               1999-07-17      99    99    96    96
+18 Anastacia           I'm Outta Love       2000-04-01      92    NA    NA    95
+19 Anthony, Marc       My Baby You          2000-09-16      82    76    76    70
+20 Anthony, Marc       You Sang To Me       2000-02-26      77    54    50    43
+# ℹ 297 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>        Min.      1st Qu.       Median         Mean      3rd Qu.         Max. 
+"1999-06-05" "2000-02-05" "2000-04-29" "2000-05-03" "2000-08-12" "2000-12-30" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>::: {.cell} ::: {.cell-output-display} <img src="analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"> ::: :::</p>
+<p>::: {.cell} ::: {.cell-output .cell-output-stdout}</p>
+<pre><code># A tibble: 6 × 4
+  column present missing total
+  &lt;chr&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt;
+1 wk1        317       0   317
+2 wk4        300      17   317
+3 wk10       244      73   317
+4 wk20       146     171   317
+5 wk40         7     310   317
+6 wk76         0     317   317</code></pre>
+<p>::: :::</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  `Re-entered` `Did not re-enter`
+         &lt;int&gt;              &lt;int&gt;
+1           15                302</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  status         count
+  &lt;chr&gt;          &lt;int&gt;
+1 Got worse         27
+2 Improved         251
+3 Missing by wk6    37
+4 Stayed same        2</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Median rank change (songs with both wk1 and wk6):</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  median_change
+          &lt;dbl&gt;
+1           -27</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 317 × 6
+   artist              track       first_rank best_rank week_at_best total_weeks
+   &lt;chr&gt;               &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;       &lt;int&gt;
+ 1 2 Pac               Baby Don't…         87        72            3           7
+ 2 2Ge+her             The Hardes…         91        87            2           3
+ 3 3 Doors Down        Kryptonite          81         3           32          53
+ 4 3 Doors Down        Loser               76        55            7          20
+ 5 504 Boyz            Wobble Wob…         57        17            4          18
+ 6 98^0                Give Me Ju…         51         2            7          20
+ 7 A*Teens             Dancing Qu…         97        95            4           5
+ 8 Aaliyah             I Don't Wa…         84        35            6          20
+ 9 Aaliyah             Try Again           59         1           14          32
+10 Adams, Yolanda      Open My He…         76        57            9          20
+11 Adkins, Trace       More                84        65            8          11
+12 Aguilera, Christina Come On Ov…         57         1           11          21
+13 Aguilera, Christina I Turn To …         50         3           12          22
+14 Aguilera, Christina What A Gir…         71         1            8          24
+15 Alice Deejay        Better Off…         79        27            9          20
+16 Allan, Gary         Smoke Ring…         80        76            3           5
+17 Amber               Sexual              99        42           31          29
+18 Anastacia           I'm Outta …         92        92            1           3
+19 Anthony, Marc       My Baby You         82        70            4          20
+20 Anthony, Marc       You Sang T…         77         2           15          32
+# ℹ 297 more rows</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== NOTABLE SONGS ===</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Fastest to reach #1:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  artist  track first_rank best_rank week_at_best total_weeks
+  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;       &lt;int&gt;
+1 Madonna Music         41         1            6          24</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Slowest to reach #1:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  artist   track  first_rank best_rank week_at_best total_weeks
+  &lt;chr&gt;    &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;       &lt;int&gt;
+1 Lonestar Amazed         81         1           40          55</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Top-10 song with longest chart run:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  artist track  first_rank best_rank week_at_best total_weeks
+  &lt;chr&gt;  &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;       &lt;int&gt;
+1 Creed  Higher         81         7           46          57</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 </main>
 <!-- /main column -->
