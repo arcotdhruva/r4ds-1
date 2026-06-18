@@ -1,29 +1,29 @@
----
-title: "Analyzing Music Data"
-author: "Dhruva Arcot"
-format: html
-execute:
-  echo: false
----
-
-
-```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #| message: false
 library(tidyverse)
-```
-
-```{r}
+#
+#
+#
 billboard %>%
   select(artist, track, date.entered, matches("^wk[1-4]$")) %>%
   print(n = 20)
-```
-
-```{r}
+#
+#
+#
 # Summary of date.entered to show time period covered
 summary(as.Date(billboard$date.entered))
-```
-
-```{r}
+#
+#
+#
 # Histogram of wk1 with sample size in title
 wk1_n <- sum(!is.na(billboard$wk1))
 ggplot(billboard, aes(x = wk1)) +
@@ -34,9 +34,9 @@ ggplot(billboard, aes(x = wk1)) +
     y = "count"
   ) +
   theme_minimal()
-```
-
-  ```{r}
+#
+#
+#
   # Histogram of wk6 with sample size in title
   wk6_n <- sum(!is.na(billboard$wk6))
   ggplot(billboard, aes(x = wk6)) +
@@ -47,9 +47,9 @@ ggplot(billboard, aes(x = wk1)) +
       y = "count"
     ) +
     theme_minimal()
-  ```
-
-  ```{r}
+#
+#
+#
   # Table of missing and present counts for selected wk columns
   wk_cols <- c("wk1","wk4","wk10","wk20","wk40","wk76")
   counts <- tibble(column = wk_cols) %>%
@@ -59,9 +59,9 @@ ggplot(billboard, aes(x = wk1)) +
       total = nrow(billboard)
     )
   counts %>% print()
-  ```
-
-```{r}
+#
+#
+#
 # Detect songs that leave the chart and re-enter
 billboard <- billboard %>%
   mutate(
@@ -92,9 +92,9 @@ billboard %>%
     `Did not re-enter` = sum(!re_entered)
   ) %>%
   print()
-```
-
-```{r}
+#
+#
+#
 # Compare wk1 and wk6 ranks
 comparison <- billboard %>%
   mutate(
@@ -121,9 +121,9 @@ comparison %>%
   filter(!is.na(rank_change)) %>%
   summarize(median_change = median(rank_change)) %>%
   print()
-```
-
-```{r}
+#
+#
+#
 # Reshape billboard data to long format: week and rank columns
 billboard_long <- billboard %>%
   select(artist, track, starts_with("wk")) %>%
@@ -147,9 +147,9 @@ ggplot(billboard_long, aes(x = week, y = rank, group = interaction(artist, track
   ) +
   theme_minimal() +
   theme(legend.position = "none")
-```
-
-```{r}
+#
+#
+#
 # Create song-level summary
 song_summary <- billboard_long %>%
   group_by(artist, track) %>%
@@ -189,9 +189,9 @@ longest_top10 <- song_summary %>%
   slice(1)
 cat("\nTop-10 song with longest chart run:\n")
 print(longest_top10)
-```
-
-```{r}
+#
+#
+#
 #| cache: true
 # Plot top-10 songs with three notable songs highlighted
 # Get the three notable songs
@@ -236,16 +236,16 @@ ggplot(top10_long, aes(x = week, y = rank, group = interaction(artist, track), c
   ) +
   theme_minimal() +
   theme(legend.position = "right")
-```
-
-```{r}
+#
+#
+#
 # Read and print data/music.csv with readr
 music <- readr::read_csv("data/music.csv")
 print(music)
 ```
-The `artist.familiarity` field measures how familiar listeners are with the artist, while `artist.hotttnesss` estimates the artist’s current popularity or success.
-
-```{r}
+#
+#
+#
 # Summary statistics for selected music fields
 music %>%
   select(artist.familiarity, artist.hotttnesss, song.year, song.tempo) %>%
@@ -259,9 +259,9 @@ music %>%
   pivot_longer(everything(), names_to = c("variable", "stat"), names_sep = "_") %>%
   pivot_wider(names_from = stat, values_from = value) %>%
   print()
-```
-
-```{r}
+#
+#
+#
 # Plot distribution of song.year excluding missing years
 year_data <- music %>%
   filter(song.year != 0)
@@ -277,9 +277,9 @@ ggplot(year_data, aes(x = song.year)) +
     y = "Count"
   ) +
   theme_minimal()
-```
-
-```{r}
+#
+#
+#
 # Print a smaller, more readable subset of music columns
 music %>%
   select(
@@ -323,11 +323,11 @@ placeholder_counts <- tibble(
 placeholder_counts %>%
   arrange(desc(placeholder_count)) %>%
   print()
-```
-
-Note: artist coordinates with both `artist.latitude` and `artist.longitude` equal to 0 are placeholders and should not be used for mapping.
-
-```{r}
+#
+#
+#
+#
+#
 # Count unique artists with usable versus placeholder coordinates
 artist_coord_counts <- music %>%
   distinct(artist.name, artist.latitude, artist.longitude) %>%
@@ -343,23 +343,20 @@ artist_coord_counts <- music %>%
 artist_coord_counts %>%
   arrange(desc(artist_count)) %>%
   print()
-```
-
-```{r}
-# Ensure the maps package is available for ggplot2 world map data
+#
+#
+#
+# Map artists with usable coordinates on a world map
 if (!requireNamespace("maps", quietly = TRUE)) {
   install.packages("maps")
 }
 
-world_map <- ggplot2::map_data("world")
-```
-
-```{r}
-# Plot 1: world map of artists with usable coordinates
-usable_artists_coords <- music %>%
+usable_artists <- music %>%
   distinct(artist.name, artist.latitude, artist.longitude) %>%
   filter(!(artist.latitude == 0 & artist.longitude == 0))
 
+world_map <- maps::map_data("world")
+
 ggplot() +
   geom_polygon(
     data = world_map,
@@ -369,164 +366,22 @@ ggplot() +
     size = 0.2
   ) +
   geom_point(
-    data = usable_artists_coords,
+    data = usable_artists,
     aes(x = artist.longitude, y = artist.latitude),
     color = "steelblue",
-    alpha = 0.8,
-    size = 1.5
+    alpha = 0.6,
+    size = 2
   ) +
   coord_quickmap() +
   labs(
-    title = "Artist Locations with Usable Coordinates",
-    subtitle = "Only artists with nonzero latitude and longitude are shown",
+    title = "Artist Locations Based on Usable Coordinates",
+    subtitle = "Only artists with nonzero latitude and longitude are shown; zero/zero coordinates are treated as placeholders",
     x = "Longitude",
     y = "Latitude"
   ) +
   theme_minimal()
-```
-
-```{r}
-# Plot 2: world map colored by artist familiarity
-usable_artists_familiarity <- music %>%
-  distinct(artist.name, artist.latitude, artist.longitude, artist.familiarity) %>%
-  filter(
-    !(artist.latitude == 0 & artist.longitude == 0),
-    artist.familiarity > 0
-  )
-
-ggplot() +
-  geom_polygon(
-    data = world_map,
-    aes(x = long, y = lat, group = group),
-    fill = "gray95",
-    color = "gray60",
-    size = 0.2
-  ) +
-  geom_point(
-    data = usable_artists_familiarity,
-    aes(x = artist.longitude, y = artist.latitude, color = artist.familiarity),
-    alpha = 0.8,
-    size = 1.5
-  ) +
-  scale_color_viridis_c(option = "plasma", name = "Familiarity") +
-  coord_quickmap() +
-  labs(
-    title = "Artist Locations by Familiarity",
-    subtitle = "Only artists with usable coordinates and familiarity > 0 are shown; color reflects familiarity",
-    x = "Longitude",
-    y = "Latitude"
-  ) +
-  theme_minimal()
-```
-
-```{r}
-# Plot 3: world map colored by artist hotness
-usable_artists_hotness <- music %>%
-  distinct(artist.name, artist.latitude, artist.longitude, artist.hotttnesss) %>%
-  filter(
-    !(artist.latitude == 0 & artist.longitude == 0),
-    artist.hotttnesss > 0
-  )
-
-ggplot() +
-  geom_polygon(
-    data = world_map,
-    aes(x = long, y = lat, group = group),
-    fill = "gray95",
-    color = "gray60",
-    size = 0.2
-  ) +
-  geom_point(
-    data = usable_artists_hotness,
-    aes(x = artist.longitude, y = artist.latitude, color = artist.hotttnesss),
-    alpha = 0.8,
-    size = 1.5
-  ) +
-  scale_color_viridis_c(option = "plasma", name = "Hotness") +
-  coord_quickmap() +
-  labs(
-    title = "Artist Locations by Hotness",
-    subtitle = "Only artists with usable coordinates and hotness > 0 are shown; color reflects hotness",
-    x = "Longitude",
-    y = "Latitude"
-  ) +
-  theme_minimal()
-```
-
-```{r}
-# Plot 4: world map colored by primary genre based on artist terms
-usable_artists_genre <- music %>%
-  distinct(artist.name, artist.latitude, artist.longitude, artist.terms) %>%
-  filter(!(artist.latitude == 0 & artist.longitude == 0)) %>%
-  mutate(
-    genre = case_when(
-      str_detect(artist.terms, regex("rock", ignore_case = TRUE)) ~ "rock",
-      str_detect(artist.terms, regex("pop", ignore_case = TRUE)) ~ "pop",
-      str_detect(artist.terms, regex("blues", ignore_case = TRUE)) ~ "blues",
-      str_detect(artist.terms, regex("jazz", ignore_case = TRUE)) ~ "jazz",
-      str_detect(artist.terms, regex("metal", ignore_case = TRUE)) ~ "metal",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  filter(!is.na(genre)) %>%
-  mutate(genre = factor(genre, levels = c("rock", "pop", "blues", "jazz", "metal")))
-
-ggplot() +
-  geom_polygon(
-    data = world_map,
-    aes(x = long, y = lat, group = group),
-    fill = "gray95",
-    color = "gray60",
-    size = 0.2
-  ) +
-  geom_point(
-    data = usable_artists_genre,
-    aes(x = artist.longitude, y = artist.latitude, color = genre),
-    alpha = 0.8,
-    size = 1.5
-  ) +
-  scale_color_brewer(palette = "Set1", name = "Genre") +
-  coord_quickmap() +
-  labs(
-    title = "Geographic Spread of Artists by Primary Genre",
-    subtitle = "Artists are colored by the first matching genre term among rock, pop, blues, jazz, metal",
-    x = "Longitude",
-    y = "Latitude"
-  ) +
-  theme_minimal()
-```
-
-```{r}
-# Plot 5: world map colored by song release year
-usable_artists_year <- music %>%
-  distinct(artist.name, artist.latitude, artist.longitude, song.year) %>%
-  filter(
-    !(artist.latitude == 0 & artist.longitude == 0),
-    song.year != 0
-  )
-
-ggplot() +
-  geom_polygon(
-    data = world_map,
-    aes(x = long, y = lat, group = group),
-    fill = "gray95",
-    color = "gray60",
-    size = 0.2
-  ) +
-  geom_point(
-    data = usable_artists_year,
-    aes(x = artist.longitude, y = artist.latitude, color = song.year),
-    alpha = 0.8,
-    size = 1.5
-  ) +
-  scale_color_viridis_c(option = "plasma", name = "Song Year") +
-  coord_quickmap() +
-  labs(
-    title = "Artist Locations by Song Release Year",
-    subtitle = "Only artists with usable coordinates and a valid song year are shown; color reflects song release year",
-    x = "Longitude",
-    y = "Latitude"
-  ) +
-  theme_minimal()
-```
-
+#
+#
+#
+#
+#
